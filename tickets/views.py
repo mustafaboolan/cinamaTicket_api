@@ -1,13 +1,16 @@
 from django.http import Http404, JsonResponse 
 from django.shortcuts import render
 # import models
-from .models import Quest,Movie,Reservation
+from .models import Quest,Movie,Reservation,Post
 from rest_framework import status
 from rest_framework.response import Response 
 from rest_framework.decorators import api_view 
-from .serializers import QuestSerializers , MovieSerializers,ReservationSerializers
+from .serializers import QuestSerializers , MovieSerializers,ReservationSerializers ,PostSerializers
 from rest_framework.views import APIView
 from rest_framework import generics,mixins , viewsets ,filters
+from rest_framework.authentication import BasicAuthentication,TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from .my_permissions import Just_For_Creator
 
 
 # Create your views here.
@@ -93,6 +96,7 @@ class CbvList(APIView):
             guest = Quest.objects.all()
             serializer = QuestSerializers(guest,many=True)
             return Response(serializer.data)
+    
     def post(self,r):
         print(r.data)
         serializer = QuestSerializers(data=r.data)
@@ -156,12 +160,16 @@ class mixin_pk(mixins.RetrieveModelMixin,mixins.UpdateModelMixin,mixins.DestroyM
 # 6 generics method 
 class generics_list(generics.ListCreateAPIView):
     queryset = Quest.objects.all()
-    serializer_class = QuestSerializers    
+    serializer_class = QuestSerializers
+    # this add auth and permission for one view
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
 # 6.1 generic with pk edite delete 
 class generics_pk(generics.RetrieveUpdateDestroyAPIView):
     queryset = Quest.objects.all()
     serializer_class = QuestSerializers
+    # this add token to this view
 
 
 # 7 view set views
@@ -180,6 +188,8 @@ class viewset_move(viewsets.ModelViewSet):
 class viewset_res(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializers    
+    authentication_classes =[BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
 # find movi this used only in postman
 @api_view(['GET'])
@@ -207,5 +217,13 @@ def new_res(req):
     res.movie = movie
     res.save()
     return Response(status.HTTP_201_CREATED)
+
+
+# make Post model view with my permessions
+class Post_details(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [Just_For_Creator]
+    queryset = Post.objects.all()
+    serializer_class=PostSerializers
+
 
 

@@ -19,3 +19,9 @@ class QuestSerializers(serializers.ModelSerializer):
     class Meta:
         model = models.Quest
         fields = ['pk','name','mobile']          
+
+class PostSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = models.Post
+        fields = '__all__'
+        # fields = ['author','title','body']

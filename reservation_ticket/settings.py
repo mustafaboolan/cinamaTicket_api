@@ -38,10 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tickets',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework.authtoken'
    
 ]
+# this is abasic authentication from rest and it's global 
+# here can give permissions allowany - is_authinticated - is_administer & is authinticated read only
+# we can make own permissions like this for post models 
 REST_FRAMEWORK = {
+        #  'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.TokenAuthentication'],
+        # 'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.BasicAuthentication'],
+        # 'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
 }
 
 MIDDLEWARE = [

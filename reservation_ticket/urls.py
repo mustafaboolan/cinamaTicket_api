@@ -3,6 +3,9 @@ from django.contrib import admin
 from django.urls import path,include
 from tickets import views
 from rest_framework.routers import DefaultRouter
+from rest_framework.authtoken.views import obtain_auth_token
+
+
 
 router = DefaultRouter()
 router.register('gst',views.viewsets_guest)
@@ -34,7 +37,18 @@ urlpatterns = [
     path('find',views.findmovie),
     # new reservation
     path('new_res',views.new_res),
+    #  this used to reset urls add log out 
+    path('api-auth',include('rest_framework.urls')),
+    # this to add token
+    path('token/', obtain_auth_token),
+    # view for post models with auth
+    path('post/<int:pk>',views.Post_details.as_view()),
+
 
 
 
 ]
+# {
+#     "username": "boss",
+#     "password": "1234"
+# }
